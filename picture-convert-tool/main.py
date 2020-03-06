@@ -61,29 +61,25 @@ def radio_button_output():
 
 def button_command():
     #start progress bar
-    from_path = Path(from_path_test_input.get())
     to_path = os.path.join(to_path_test_input.get(),"")
-    from_path = os.path.join(from_path,"")
-    print(from_path_test_input.get())
-    print(from_path)
-    print(to_path)
+    from_path = os.path.join(str(from_path_test_input.get()),"")
 
     popup = tk.Toplevel()
     tk.Label(popup, text="Following Pictures are beoing converted:").grid(row=0,column=0)
     text3 = tk.Label(popup, text="----").grid(row=2, column=0)
     popup.geometry('200x200')
     dirs = os.listdir(from_path)
-    print('directory')
-    print(dirs)
+
     h = int(E1.get())
     w = int(E2.get())
+
     Image.MAX_IMAGE_PIXELS = None
 
     for item in dirs:
-        print(item)
-        if os.path.isfile(from_path + item):
+
+        if os.path.isfile(os.path.join(from_path, item)):
             try:
-                im = Image.open(from_path + item)
+                im = Image.open(str(from_path)+item)
                 imResize = im.resize((w, h), Image.ANTIALIAS)
                 item_name = item
                 item_name = item_name.replace("{}".format(E3), "")
@@ -96,7 +92,8 @@ def button_command():
                 imResize.save(to_path + item_name, 'JPEG', quality=90)
                 text3.config(text=item_name)
             except:
-                print('other file found')
+                print("Unexpected error:", sys.exc_info())
+                
 
         #    print('Failed')
     popup.destroy()
