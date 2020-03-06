@@ -4,6 +4,9 @@ from tkinter import *
 from ttkthemes import ThemedStyle
 from time import sleep
 from tkinter import ttk
+from PIL import Image
+import os, sys
+from pathlib import Path
 
 tool = tk.Tk()
 
@@ -12,16 +15,21 @@ tool.geometry('300x500')
 
 #folder_selected = filedialog.askdirectory()
 #from_file_btn = tk.Button(tool, text='From Folder', command=select_file)
-text1 = ''
-text2 = ''
-E1 = ''
-E2 = ''
-v2 = IntVar()
-v1 = IntVar()
+text1 = '' # from path
+text2 = '' # to path
+text3 = ''#picture being converted
+from_file_path1 = ''
+to_file_path = ''
 
-v1.set(0)
-v2.set(0)
-teams = range(10)
+E1 = '' #height
+E2 = '' # width
+v2 = IntVar() # zipfile selection
+v1 = IntVar() # normalize selection
+E3 = ''# char to replace
+
+v1.set(0) # default as none
+v2.set(0) # default as none
+
 
 
 def from_select_file():
@@ -40,29 +48,44 @@ def print_num():
 def radio_button_output():
     print(v1.get())
     print(v2.get())
+    print(text1)
+    print('hello')
 
 def button_command():
     #start progress bar
+    print(from_file_path)
+    from_path = Path(from_file_path)
+    to_path = Path(to_file_path)
+    print(from_path)
+    print('hello')
+
     popup = tk.Toplevel()
-    tk.Label(popup, text="Files being downloaded").grid(row=0,column=0)
-    popup.geometry('150x150')
-    close_button = ttk.Button(popup, text="Done", command=popup.destroy)
+    tk.Label(popup, text="Following Pictures are beoing converted:").grid(row=0,column=0)
+    text3 = tk.Label(popup, text="----").grid(row=2, column=0)
+    popup.geometry('200x200')
+    dirs = os.listdir(from_path)
+    h = int(E1.get())
+    w = int(E2.get())
+    Image.MAX_IMAGE_PIXELS = None
 
-    progress = 0
-    progress_var = tk.DoubleVar()
-    progress_bar = ttk.Progressbar(popup, variable=progress_var, maximum=100)
-    progress_bar.grid(row=1, column=0)#.pack(fill=tk.X, expand=1, side=tk.BOTTOM)
-    popup.pack_slaves()
+    for item in dirs:
+        if os.path.isfile(from_path + item):
+            im = Image.open(from_path + item)
+            imResize = im.resize((w, h), Image.ANTIALIAS)
+            item_name = item
+            item_name = item_name.replace("{}".format(E3), "")
+            if v1 == 1:
+                item_name = item_name.lower()
+            elif v1 == 2:
+                item_name = item_name.upper()
+            else:
+                None
+            imResize.save(to_path + item_name, 'JPEG', quality=90)
+            text3.config(text=item_name)
 
-
-    progress_step = float(100.0/len(teams))
-    for team in teams:
-        popup.update()
-        sleep(1) # lauch task
-        progress += progress_step
-        progress_var.set(progress)
+        #    print('Failed')
     popup.destroy()
-    
+
 
 
 
