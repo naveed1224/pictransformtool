@@ -1,4 +1,4 @@
-# pictransformtool
+# Mass Picture edit Tool
 Mass picture transform tool - transform and resize 1000s of pictures
 
 Features:
